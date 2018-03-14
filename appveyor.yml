@@ -11,17 +11,5 @@ build_script:
 after_build:
   - cmd: 7z a haproxy-cygwin.zip C:\cygwin64\bin\cygcrypto-1.0.0.dll C:\cygwin64\bin\cygpcre-1.dll C:\cygwin64\bin\cygssl-1.0.0.dll C:\cygwin64\bin\cygwin1.dll C:\cygwin64\bin\cygz.dll C:\cygwin64\home\appveyor\haproxy-1.8.4\haproxy.exe
 
-artifacts:
-  - path: haproxy-cygwin.zip
-    name: haproxy-cygwin
-
 deploy:
-  provider: S3
-  access_key_id: $(ARTIFACTS_KEY)
-  secret_access_key: $(ARTIFACTS_SECRET)
-  bucket: $(ARTIFACTS_BUCKET)
-  region: $(ARTIFACTS_REGION)
-  folder: $(ARTIFACTS_FOLDER)
-  artifact: haproxy-cygwin
-
-  
+  - cmd: aws --region %ARTIFACTS_REGION% s3 cp haproxy-cygwin.zip s3://%ARTIFACTS_BUCKET%/%ARTIFACTS_FOLDER%/
