@@ -1,0 +1,27 @@
+os: Visual Studio 2017
+
+install:
+  - cmd: C:\cygwin64\setup-x86_64.exe -qgnNdO -l C:\cygwin64\var\cache\setup -R c:\cygwin64 -s http://cygwin.mirror.constant.com -P openssl-devel -P libpcre-devel -P zlib-devel -P make -P gcc-g++ -P binutils -P curl -P patch
+
+build_script:
+  - cmd: C:\cygwin64\bin\bash -e -l -c "curl http://www.haproxy.org/download/1.8/src/haproxy-1.8.4.tar.gz | tar xvz"
+  - cmd: C:\cygwin64\bin\bash -e -l -c "cd haproxy-1.8.4 && cp /cygdrive/c/Projects/haproxy-cygwin/haproxy-cygwin.patch . && patch -s -p1 < haproxy-cygwin.patch"
+  - cmd: C:\cygwin64\bin\bash -e -l -c "cd haproxy-1.8.4 && make TARGET=cygwin ARCH=x86_64 USE_PCRE=1 USE_OPENSSL=1 USE_ZLIB=1"
+
+after_build:
+  - cmd: 7z a haproxy-cygwin.zip C:\cygwin64\bin\cygcrypto-1.0.0.dll C:\cygwin64\bin\cygpcre-1.dll C:\cygwin64\bin\cygssl-1.0.0.dll C:\cygwin64\bin\cygwin1.dll C:\cygwin64\bin\cygz.dll C:\cygwin64\home\appveyor\haproxy-1.8.4\haproxy.exe
+
+artifacts:
+  - path: haproxy-cygwin.zip
+    name: haproxy-cygwin
+
+deploy:
+  provider: S3
+  access_key_id: $(ARTIFACTS_KEY)
+  secret_access_key: $(ARTIFACTS_SECRET)
+  bucket: $(ARTIFACTS_BUCKET)
+  region: $(ARTIFACTS_REGION)
+  folder: $(ARTIFACTS_FOLDER)
+  artifact: haproxy-cygwin
+
+  

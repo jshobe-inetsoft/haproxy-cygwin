@@ -1,0 +1,39 @@
+diff -ruN a/Makefile b/Makefile
+--- a/Makefile	2018-02-08 08:05:15.000000000 -0500
++++ b/Makefile	2018-03-14 08:58:23.734376736 -0400
+@@ -855,9 +855,9 @@
+ endif
+ 
+ OBJS = src/proto_http.o src/cfgparse.o src/server.o src/stream.o        \
+-       src/flt_spoe.o src/stick_table.o src/stats.o src/mux_h2.o        \
+-       src/checks.o src/haproxy.o src/log.o src/dns.o src/peers.o       \
+-       src/standard.o src/sample.o src/cli.o src/stream_interface.o     \
++       src/flt_spoe.o src/stick_table.o src/stats.o src/standard.o      \
++       src/mux_h2.o src/checks.o src/haproxy.o src/log.o src/dns.o      \
++       src/peers.o src/sample.o src/cli.o src/stream_interface.o        \
+        src/proto_tcp.o src/backend.o src/proxy.o src/tcp_rules.o        \
+        src/listener.o src/flt_http_comp.o src/pattern.o src/cache.o     \
+        src/filters.o src/vars.o src/acl.o src/payload.o                 \
+diff -ruN a/src/mux_h2.c b/src/mux_h2.c
+--- a/src/mux_h2.c	2018-02-08 08:05:15.000000000 -0500
++++ b/src/mux_h2.c	2018-03-14 08:56:14.901160972 -0400
+@@ -17,6 +17,7 @@
+ #include <common/hpack-enc.h>
+ #include <common/hpack-tbl.h>
+ #include <common/net_helper.h>
++#include <common/standard.h>
+ #include <proto/applet.h>
+ #include <proto/connection.h>
+ #include <proto/h1.h>
+diff -ruN a/src/standard.c b/src/standard.c
+--- a/src/standard.c	2018-02-08 08:05:15.000000000 -0500
++++ b/src/standard.c	2018-03-14 08:56:40.821405967 -0400
+@@ -3973,7 +3973,7 @@
+ }
+ 
+ /* do nothing, just a placeholder for debugging calls, the real one is in trace.c */
+-__attribute__((weak,format(printf, 1, 2)))
++__attribute__((format(printf, 1, 2)))
+ void trace(char *msg, ...)
+ {
+ }
